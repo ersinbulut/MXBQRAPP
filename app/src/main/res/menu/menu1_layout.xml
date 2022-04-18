@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/Item1"
+        android:icon="@drawable/olustur"
+        android:title="OLUŞTURUCU" />
+    <item
+        android:id="@+id/Item2"
+        android:icon="@drawable/tara"
+        android:title="TARAYICI" />
+    <item
+        android:id="@+id/Item3"
+        android:icon="@drawable/ayarlar"
+        android:title="AYARLAR" />
+</menu>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#CED6D6"
+    tools:context=".bottomnavigation.FQrscanner">
+
+    <com.budiyev.android.codescanner.CodeScannerView
+        android:id="@+id/scanner_view"
+        android:layout_width="match_parent"
+        android:layout_height="748dp"
+        android:layout_marginTop="15dp"
+        app:autoFocusButtonColor="#504F4F"
+        app:autoFocusButtonVisible="true"
+        app:flashButtonColor="@android:color/black"
+        app:flashButtonVisible="true"
+        app:frameAspectRatioHeight="1"
+        app:frameAspectRatioWidth="1"
+        app:frameColor="@android:color/black"
+        app:frameCornersRadius="0dp"
+        app:frameCornersSize="70dp"
+        app:frameSize="0.75"
+        app:frameThickness="7dp"
+        app:maskColor="#A3FFFFFF" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="match_parent"
+        android:layout_height="87dp"
+        android:layout_marginTop="-55dp"
+        android:background="@drawable/rounded_buton"
+        android:fontFamily="@font/arimo"
+        android:gravity="bottom|center"
+        android:text="KAREKOD TARAYICI"
+        android:textColor="@android:color/white"
+        android:textSize="24sp" />
+</FrameLayout>
