@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
+import android.widget.EditText;
 
 import com.mxbqr.app.R;
 import com.mxbqr.app.model.Personel;
@@ -40,18 +40,18 @@ public class OzelAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = layoutInflater.inflate(R.layout.activity_register, parent, false);
+        convertView = layoutInflater.inflate(R.layout.satir, parent, false);
 
-        TextView adsoyad = convertView.findViewById(R.id.edTCKimlikNo);
-        TextView tc = convertView.findViewById(R.id.edTCKimlikNo);
-        TextView sicilno = convertView.findViewById(R.id.edSicilNo);
-        TextView birim = convertView.findViewById(R.id.edBirim);
-        TextView adres = convertView.findViewById(R.id.edAdres);
-        TextView telefon = convertView.findViewById(R.id.edTelefon);
-        TextView lokasyon = convertView.findViewById(R.id.edLokasyon);
+        EditText adsoyad = convertView.findViewById(R.id.edTCKimlikNo);
+        EditText tc = convertView.findViewById(R.id.edTCKimlikNo);
+        EditText sicilno = convertView.findViewById(R.id.edSicilNo);
+        EditText birim = convertView.findViewById(R.id.edBirim);
+        EditText adres = convertView.findViewById(R.id.edAdres);
+        EditText telefon = convertView.findViewById(R.id.edTelefon);
+        EditText lokasyon = convertView.findViewById(R.id.edLokasyon);
 
-        TextView kullaniciadi = convertView.findViewById(R.id.edKullaniciAdi);
-        TextView kullanicisifre = convertView.findViewById(R.id.edSifre);
+        EditText kullaniciadi = convertView.findViewById(R.id.edKullaniciAdi);
+        EditText kullanicisifre = convertView.findViewById(R.id.edSifre);
 
 
         Personel p = personels.get(position);

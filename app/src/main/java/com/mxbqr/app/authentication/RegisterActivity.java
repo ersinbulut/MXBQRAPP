@@ -6,10 +6,12 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,19 +26,33 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.mxbqr.app.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.mxbqr.app.model.Personel;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity implements LocationListener {
     EditText AdSoyad,TCKimlik,SicilNo,Birim,Adres,Telefon,Lokasyon,KullaniciAdi,Sifre;
+    TextView markamodel,mac,ipaddress;
     //firebase veritabanı islemleri ile ilgili tanımlamalar
     FirebaseDatabase database;
     DatabaseReference myRef;
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
     //lokasyon islemleri ile ilgili tanımlamalar
     private LocationManager konumYoneticisi;
     private String konumSaglayici = "gps";
@@ -58,9 +74,21 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
 
         konumYoneticisi = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+        markamodel=(TextView) findViewById(R.id.textView1_model);
+        mac=(TextView) findViewById(R.id.textView2_mac);
+        ipaddress=(TextView) findViewById(R.id.textView3_manufacture);
+        //cihazın marka model, mac ve ip adresini gizli textview e yazdırma
+        markamodel.setText(Build.MANUFACTURER+ " " + Build.MODEL);
+        String mac_adresi=getMacAddr();
+        String ip_adresi=getIpAddress(true);
+        mac.setText(mac_adresi);
+        ipaddress.setText(ip_adresi);
+        ///////////////////////////////////////////
+        mAuth=FirebaseAuth.getInstance();
+        mUser=mAuth.getCurrentUser();
 
          database = FirebaseDatabase.getInstance();
-         myRef = database.getReference("users");
+         myRef = database.getReference("personels");
 
     }
     @Override
@@ -116,7 +144,7 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
         }
 
     }
-
+    //firebase tarafına personel ekleyen method
     public void btnPersonelEkle(View view){
         konumAl();
         String edAdSoyad=AdSoyad.getText().toString();
@@ -126,17 +154,41 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
         String edAdres=Adres.getText().toString();
         String edTelefon=Telefon.getText().toString();
         String edLokasyon=Lokasyon.getText().toString();
+
+        String chzmarkamodel=markamodel.getText().toString();
+        String chzmac=mac.getText().toString();
+        String chzip=ipaddress.getText().toString();
+
         String edKullaniciAdi=KullaniciAdi.getText().toString();
         String edSifre=Sifre.getText().toString();
+
+        mAuth.createUserWithEmailAndPassword(edKullaniciAdi,edSifre)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override//Giriş başarılı ise
+                    public void onSuccess(AuthResult authResult) {
+                        Toast.makeText(RegisterActivity.this, "Kayıt Başarılı", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override//Giriş hatalı ise
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(RegisterActivity.this, "Kayıt Hatalı"+e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
         String id = myRef.getKey();
-        Personel yeniPersonel=new Personel(id,edAdSoyad,edTCKimlik,edSicilNo,edBirim,edAdres,edTelefon,edLokasyon,edKullaniciAdi,edSifre);
+        String userid=mUser.getUid();
+
+        Personel yeniPersonel=new Personel(id,userid,edAdSoyad,edTCKimlik,edSicilNo,edBirim,edAdres,edTelefon,edLokasyon,chzmarkamodel,chzmac,chzip,edKullaniciAdi,edSifre);
 
         myRef.push().setValue(yeniPersonel);
-        kisiEkle();
+        kisiEkle();  //sunucu veri tabanına ekleme metodu
         Toast.makeText(this, "Personel Eklendi..", Toast.LENGTH_SHORT).show();
         finish();
     }
 
+
+    //sunucu tarafına personel ekleyen method
     public void kisiEkle(){
         String url="http://mxbinteractive.com/MXBQRAPP/insert_personel.php";
 
@@ -163,6 +215,10 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
                 params.put("personel_adres",Adres.getText().toString());
                 params.put("personel_telefon",Telefon.getText().toString());
                 params.put("personel_lokasyon",Lokasyon.getText().toString());
+
+                params.put("personel_cmarkamodel",markamodel.getText().toString());
+                params.put("personel_cmacadresi",mac.getText().toString());
+                params.put("personel_cipadresi",ipaddress.getText().toString());
                 //Login Bilgileri
                 params.put("personel_kullaniciadi",KullaniciAdi.getText().toString());
                 params.put("personel_sifre",Sifre.getText().toString());
@@ -175,6 +231,7 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
         //Toast.makeText(this, "Eklendi..", Toast.LENGTH_SHORT).show();
 
     }
+    //Cihazın konumunu alan method
     public void konumAl(){
         izinKontrol = ContextCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.ACCESS_FINE_LOCATION);
 
@@ -197,5 +254,58 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
                 Lokasyon.setText("Konum aktif degil");
             }
         }
+    }
+    //Cihazın mac adresini alan method
+    public static String getMacAddr() {
+        try {
+            ArrayList<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface nif : all) {
+                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
+
+                byte[] macBytes = nif.getHardwareAddress();
+                if (macBytes == null) {
+                    return "";
+                }
+
+                StringBuilder res1 = new StringBuilder();
+                for (byte b : macBytes) {
+                    res1.append(String.format("%02X:",b));
+                }
+
+                if (res1.length() > 0) {
+                    res1.deleteCharAt(res1.length() - 1);
+                }
+                return res1.toString();
+            }
+        } catch (Exception ex) {
+        }
+        return "02:00:00:00:00:00";
+    }
+    //Cihazın ıp adresini alan method
+    public String getIpAddress(boolean useIPv4){
+        try {
+            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface intf : interfaces) {
+                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
+                for (InetAddress addr : addrs) {
+                    if (!addr.isLoopbackAddress()) {
+                        String sAddr = addr.getHostAddress();
+                        //boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
+                        boolean isIPv4 = sAddr.indexOf(':')<0;
+
+                        if (useIPv4) {
+                            if (isIPv4)
+                                return sAddr;
+                        } else {
+                            if (!isIPv4) {
+                                int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
+                                return delim<0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ignored) { } // for now eat exceptions
+        return "";
     }
 }

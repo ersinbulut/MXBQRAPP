@@ -8,6 +8,30 @@
     tools:context=".bottomnavigation.FQrsettings">
 
     <TextView
+        android:id="@+id/textView3_manufacture2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="TextView"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/textView2_mac2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="TextView"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/textView1_model2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="TextView"
+        android:visibility="invisible" />
+
+    <TextView
         android:id="@+id/textView14"
         android:layout_width="match_parent"
         android:layout_height="87dp"

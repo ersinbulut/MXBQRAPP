@@ -6,11 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.mxbqr.app.model.Personel;
+
 import java.util.ArrayList;
 
 public class Veritabani extends SQLiteOpenHelper {
@@ -73,8 +73,8 @@ public class Veritabani extends SQLiteOpenHelper {
                 String lokasyon=cursor.getString(7);
                 String kullanici_adi=cursor.getString(8);
                 String kullanici_sifre=cursor.getString(9);
-                Personel p=new Personel("",adsoyad,tc,sicilno,birim,adres,telefon,lokasyon,kullanici_adi,kullanici_sifre);
-                personelArrayList.add(p);
+                //Personel p=new Personel("","",adsoyad,tc,sicilno,birim,adres,telefon,lokasyon,kullanici_adi,kullanici_sifre);
+                //personelArrayList.add(p);
             }while (cursor.moveToNext());
         }
         cursor.close();
@@ -156,8 +156,8 @@ public class Veritabani extends SQLiteOpenHelper {
                 String kullanici_adi = c.getString(8);
                 String kullanici_sifre = c.getString(9);
                 //System.out.println(id +" - "+ ad +" - " + yil +" - " + tur);
-                Personel p = new Personel("", adsoyad, tc, sicilno, birim, adres,telefon,lokasyon,kullanici_adi,kullanici_sifre);
-                personeller.add(p);
+               // Personel p = new Personel("","", adsoyad, tc, sicilno, birim, adres,telefon,lokasyon,kullanici_adi,kullanici_sifre);
+                //personeller.add(p);
             }while(c.moveToNext());
         }
         c.close();

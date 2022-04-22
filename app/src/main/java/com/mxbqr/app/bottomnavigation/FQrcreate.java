@@ -66,8 +66,9 @@ public class FQrcreate extends Fragment {
         edtValue = view.findViewById(R.id.edt_value);
         activity = FQrcreate.this;
 
+
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("users");
+        myRef = database.getReference("personels");
 
         // Veri tabanındaki verileri okuma
         myRef.addValueEventListener(new ValueEventListener() {
@@ -85,10 +86,15 @@ public class FQrcreate extends Fragment {
                     String adres = personel.getAdres();
                     String telefon = personel.getTelefon();
                     String lokasyon = personel.getLokasyon();
+                    String markamodel = personel.getMarkamodel();
+                    String macadresi = personel.getMacadresi();
+                    String ipadresi = personel.getIpadresi();
                     String kadi= personel.getKullanici_adi();
                     String sifre =personel.getKullanici_sifre();
                     String stekrar= personel.getKullanici_sifre();
-                    String all= adsoyad+","+tc+","+sicilno+","+birim+","+adres+","+telefon+","+lokasyon+","+kadi+","+sifre+","  +stekrar;
+                    //Karekod içerisindeki veriler
+                    String all= adsoyad+","+tc+","+sicilno+","+birim+","+adres+","+telefon+","+lokasyon+","
+                            +markamodel+","+macadresi+","+ipadresi+","+kadi+","+sifre+","  +stekrar;
                     edtValue.setText(all);
                 }
 
@@ -102,7 +108,7 @@ public class FQrcreate extends Fragment {
             }
         });
 
-
+        //Karekod oluşturma işlemi
         view.findViewById(R.id.generate_barcode).setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.Q)
             @Override

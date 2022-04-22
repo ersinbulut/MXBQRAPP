@@ -3,6 +3,8 @@ package com.mxbqr.app.model;
 public class Personel {
     private String id;
 
+    private String userid;
+
     private String adsoyad;
     private String tc;
     private String sicilno;
@@ -11,14 +13,19 @@ public class Personel {
     private String telefon;
     private String lokasyon;
 
+    private String markamodel;
+    private String macadresi;
+    private String ipadresi;
+
     private String kullanici_adi;
     private String kullanici_sifre;
 
     public Personel() {
     }
 
-    public Personel(String id, String adsoyad, String tc, String sicilno, String birim, String adres, String telefon, String lokasyon, String kullanici_adi, String kullanici_sifre) {
+    public Personel(String id,String userid, String adsoyad, String tc, String sicilno, String birim, String adres, String telefon, String lokasyon, String markamodel, String macadresi, String ipadresi, String kullanici_adi, String kullanici_sifre) {
         this.id = id;
+        this.userid = userid;
         this.adsoyad = adsoyad;
         this.tc = tc;
         this.sicilno = sicilno;
@@ -26,8 +33,45 @@ public class Personel {
         this.adres = adres;
         this.telefon = telefon;
         this.lokasyon = lokasyon;
+        this.markamodel = markamodel;
+        this.macadresi = macadresi;
+        this.ipadresi = ipadresi;
         this.kullanici_adi = kullanici_adi;
         this.kullanici_sifre = kullanici_sifre;
+    }
+
+
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public String getMarkamodel() {
+        return markamodel;
+    }
+
+    public void setMarkamodel(String markamodel) {
+        this.markamodel = markamodel;
+    }
+
+    public String getMacadresi() {
+        return macadresi;
+    }
+
+    public void setMacadresi(String macadresi) {
+        this.macadresi = macadresi;
+    }
+
+    public String getIpadresi() {
+        return ipadresi;
+    }
+
+    public void setIpadresi(String ipadresi) {
+        this.ipadresi = ipadresi;
     }
 
     public String getId() {

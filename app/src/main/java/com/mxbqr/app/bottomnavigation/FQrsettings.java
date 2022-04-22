@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,7 +42,12 @@ import com.mxbqr.app.R;
 import com.mxbqr.app.authentication.LoginActivity;
 import com.mxbqr.app.model.Personel;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -50,7 +56,7 @@ import java.util.Map;
  */
 public class FQrsettings extends Fragment implements LocationListener {
     EditText AdSoyad,TCKimlik,SicilNo,Birim,Adres,Telefon,Lokasyon,KullaniciAdi,Sifre,SifreTekrar;
-    TextView txtkey;
+    TextView txtkey,markamodel,macadresi,ipadresi;
     Button btnKaydet,btnCikisYap;
     String key;
     //firebase veritabanı islemleri ile ilgili tanımlamalar
@@ -92,17 +98,68 @@ public class FQrsettings extends Fragment implements LocationListener {
 
         konumYoneticisi = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
+        markamodel=(TextView) view.findViewById(R.id.textView1_model2);
+        macadresi=(TextView) view.findViewById(R.id.textView2_mac2);
+        ipadresi=(TextView) view.findViewById(R.id.textView3_manufacture2);
+
+
+        markamodel.setText(Build.MANUFACTURER+ " " + Build.MODEL);
+        macadresi.setText(getMacAddr());
+        ipadresi.setText(getIpAddress(true));
+
+
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
 
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("personels");
+
+
+        // Veri tabanındaki verileri okuma
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot d:dataSnapshot.getChildren()){
+                    Personel personel = d.getValue(Personel.class);
+                    key=d.getKey();
+                    personel.setId(key);
+
+                    txtkey.setText(key);
+                    AdSoyad.setText(personel.getAdsoyad());
+                    TCKimlik.setText(personel.getTc());
+                    SicilNo.setText(personel.getSicilno());
+                    Birim.setText(personel.getBirim());
+                    Adres.setText(personel.getAdres());
+                    Telefon.setText(personel.getTelefon());
+                    Lokasyon.setText(personel.getLokasyon());
+
+                    markamodel.setText(markamodel.getText());
+                    macadresi.setText(macadresi.getText());
+                    ipadresi.setText(ipadresi.getText());
+
+                    KullaniciAdi.setText(personel.getKullanici_adi());
+                    Sifre.setText(personel.getKullanici_sifre());
+                    SifreTekrar.setText(personel.getKullanici_sifre());
+                }
+
+                //Log.d(TAG, "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                // Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+        // Veri tabanındaki verileri güncelleme
         btnKaydet=view.findViewById(R.id.button);
         btnKaydet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //kayıt güncelleme
                 konumAl();
-                kisiGuncelle();
-                //userUpdate();
+                //kisiGuncelle();
+                userUpdate();
                 Map<String,Object> bilgiler=new HashMap<>();
                 String id = key;
                 bilgiler.put("id",id);
@@ -113,6 +170,11 @@ public class FQrsettings extends Fragment implements LocationListener {
                 bilgiler.put("adres",Adres.getText().toString());
                 bilgiler.put("telefon",Telefon.getText().toString());
                 bilgiler.put("lokasyon",Lokasyon.getText().toString());
+
+                bilgiler.put("markamodel",markamodel.getText().toString());
+                bilgiler.put("macadresi",macadresi.getText().toString());
+                bilgiler.put("ipadresi",ipadresi.getText().toString());
+
                 bilgiler.put("kullanici_adi",KullaniciAdi.getText().toString());
                 bilgiler.put("kullanici_sifre",Sifre.getText().toString());
                 //bu kod firebase veritabanındaki id değeridir.
@@ -132,40 +194,7 @@ public class FQrsettings extends Fragment implements LocationListener {
             }
         });
 
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("users");
 
-
-        // Veri tabanındaki verileri okuma
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot d:dataSnapshot.getChildren()){
-                    Personel personel = d.getValue(Personel.class);
-                    key=d.getKey();
-                    personel.setId(key);
-                    txtkey.setText(key);
-                    AdSoyad.setText(personel.getAdsoyad());
-                    TCKimlik.setText(personel.getTc());
-                    SicilNo.setText(personel.getSicilno());
-                    Birim.setText(personel.getBirim());
-                    Adres.setText(personel.getAdres());
-                    Telefon.setText(personel.getTelefon());
-                    Lokasyon.setText(personel.getLokasyon());
-                    KullaniciAdi.setText(personel.getKullanici_adi());
-                    Sifre.setText(personel.getKullanici_sifre());
-                    SifreTekrar.setText(personel.getKullanici_sifre());
-                }
-
-                //Log.d(TAG, "Value is: " + value);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-               // Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
         return view;
     }
 
@@ -195,6 +224,11 @@ public class FQrsettings extends Fragment implements LocationListener {
                 params.put("personel_adres", String.valueOf(Adres.getText()));
                 params.put("personel_telefon", String.valueOf(Telefon.getText()));
                 params.put("personel_lokasyon", String.valueOf(Lokasyon.getText()));
+
+                params.put("personel_cmarkamodel",markamodel.getText().toString());
+                params.put("personel_cmacadresi",macadresi.getText().toString());
+                params.put("personel_cipadresi",ipadresi.getText().toString());
+
                 //Login Bilgileri
                 params.put("personel_kullaniciadi", String.valueOf(KullaniciAdi.getText()));
                 params.put("personel_sifre", String.valueOf(Sifre.getText()));
@@ -207,7 +241,7 @@ public class FQrsettings extends Fragment implements LocationListener {
         //Toast.makeText(this, "Eklendi..", Toast.LENGTH_SHORT).show();
 
     }
-
+/*
     public void kisiGuncelle(){
         final String tc=TCKimlik.getText().toString().trim();
         final String adsoyad=AdSoyad.getText().toString().trim();
@@ -256,7 +290,7 @@ public class FQrsettings extends Fragment implements LocationListener {
         Volley.newRequestQueue(getContext()).add(istek);
         //Toast.makeText(getContext(), "Bilgiler güncellendi..", Toast.LENGTH_SHORT).show();
     }
-
+*/
     @Override
     public void onLocationChanged(Location location) {
 
@@ -310,9 +344,7 @@ public class FQrsettings extends Fragment implements LocationListener {
         }
 
     }
-
-
-
+    //cihazın konumunu alan method
     public void konumAl(){
         izinKontrol = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION);
 
@@ -335,6 +367,60 @@ public class FQrsettings extends Fragment implements LocationListener {
                 Lokasyon.setText("Konum aktif degil");
             }
         }
+    }
+
+    //Cihazın mac adresini alan method
+    public static String getMacAddr() {
+        try {
+            ArrayList<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface nif : all) {
+                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
+
+                byte[] macBytes = nif.getHardwareAddress();
+                if (macBytes == null) {
+                    return "";
+                }
+
+                StringBuilder res1 = new StringBuilder();
+                for (byte b : macBytes) {
+                    res1.append(String.format("%02X:",b));
+                }
+
+                if (res1.length() > 0) {
+                    res1.deleteCharAt(res1.length() - 1);
+                }
+                return res1.toString();
+            }
+        } catch (Exception ex) {
+        }
+        return "02:00:00:00:00:00";
+    }
+    //Cihazın ıp adresini alan method
+    public String getIpAddress(boolean useIPv4){
+        try {
+            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface intf : interfaces) {
+                List<InetAddress> addrs = Collections.list(intf.getInetAddresses());
+                for (InetAddress addr : addrs) {
+                    if (!addr.isLoopbackAddress()) {
+                        String sAddr = addr.getHostAddress();
+                        //boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
+                        boolean isIPv4 = sAddr.indexOf(':')<0;
+
+                        if (useIPv4) {
+                            if (isIPv4)
+                                return sAddr;
+                        } else {
+                            if (!isIPv4) {
+                                int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
+                                return delim<0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ignored) { } // for now eat exceptions
+        return "";
     }
 
 }
