@@ -217,7 +217,8 @@ public class FQrsettings extends Fragment implements LocationListener {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params=new HashMap<>();
                 //Kullanıcı bilgileri
-                params.put("personel_adsoyad", String.valueOf(AdSoyad.getText()));
+                params.put("personel_id","");
+                params.put("personel_adsoyad", AdSoyad.getText().toString());
                 params.put("personel_tc", String.valueOf(TCKimlik.getText()));
                 params.put("personel_sicilno", String.valueOf(SicilNo.getText()));
                 params.put("personel_birim", String.valueOf(Birim.getText()));
