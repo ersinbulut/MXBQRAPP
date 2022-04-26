@@ -177,7 +177,7 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
                 });
 
         String id = myRef.getKey();
-        String userid=mUser.getUid();
+        String userid="mUser.getUid()";
 
         Personel yeniPersonel=new Personel(id,userid,edAdSoyad,edTCKimlik,edSicilNo,edBirim,edAdres,edTelefon,edLokasyon,chzmarkamodel,chzmac,chzip,edKullaniciAdi,edSifre);
 

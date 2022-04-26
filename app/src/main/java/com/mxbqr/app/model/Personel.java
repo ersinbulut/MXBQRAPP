@@ -41,7 +41,6 @@ public class Personel {
     }
 
 
-
     public String getUserid() {
         return userid;
     }
