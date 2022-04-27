@@ -2,6 +2,7 @@ package com.mxbqr.app.model;
 
 public class Personel {
     private String id;
+    private int id1;
 
     private String userid;
 
@@ -39,7 +40,30 @@ public class Personel {
         this.kullanici_adi = kullanici_adi;
         this.kullanici_sifre = kullanici_sifre;
     }
+    //local database constructor
+    public Personel(int i, String adsoyad, String tc, String sicilno, String birim, String adres, String telefon, String lokasyon, String markamodel, String macadresi, String ipadresi, String kullanici_adi, String kullanici_sifre) {
+        this.id1 = i;
+        this.adsoyad = adsoyad;
+        this.tc = tc;
+        this.sicilno = sicilno;
+        this.birim = birim;
+        this.adres = adres;
+        this.telefon = telefon;
+        this.lokasyon = lokasyon;
+        this.markamodel = markamodel;
+        this.macadresi = macadresi;
+        this.ipadresi = ipadresi;
+        this.kullanici_adi = kullanici_adi;
+        this.kullanici_sifre = kullanici_sifre;
+    }
 
+    public int getId1() {
+        return id1;
+    }
+
+    public void setId1(int id1) {
+        this.id1 = id1;
+    }
 
     public String getUserid() {
         return userid;

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.mxbqr.app.R;
 import com.mxbqr.app.model.Personel;
@@ -40,7 +41,7 @@ public class OzelAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = layoutInflater.inflate(R.layout.satir, parent, false);
+        convertView = layoutInflater.inflate(R.layout.data_layout, parent, false);
 
         EditText adsoyad = convertView.findViewById(R.id.edTCKimlikNo);
         EditText tc = convertView.findViewById(R.id.edTCKimlikNo);
@@ -49,6 +50,10 @@ public class OzelAdapter extends BaseAdapter {
         EditText adres = convertView.findViewById(R.id.edAdres);
         EditText telefon = convertView.findViewById(R.id.edTelefon);
         EditText lokasyon = convertView.findViewById(R.id.edLokasyon);
+
+        TextView cmarkamodel = convertView.findViewById(R.id.textView3_manufacture);
+        TextView cmacadresi = convertView.findViewById(R.id.textView2_mac);
+        TextView cipadresi = convertView.findViewById(R.id.textView1_model);
 
         EditText kullaniciadi = convertView.findViewById(R.id.edKullaniciAdi);
         EditText kullanicisifre = convertView.findViewById(R.id.edSifre);
@@ -62,6 +67,10 @@ public class OzelAdapter extends BaseAdapter {
         adres.setText(p.getAdres());
         telefon.setText(p.getTelefon());
         lokasyon.setText(p.getLokasyon());
+
+        cmarkamodel.setText(p.getMarkamodel());
+        cmacadresi.setText(p.getMacadresi());
+        cipadresi.setText(p.getIpadresi());
 
         kullaniciadi.setText(p.getKullanici_adi());
         kullanicisifre.setText(p.getKullanici_sifre());

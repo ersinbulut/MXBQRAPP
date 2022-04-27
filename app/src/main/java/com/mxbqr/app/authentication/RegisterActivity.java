@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +35,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.mxbqr.app.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.mxbqr.app.database.LocalDatabase;
 import com.mxbqr.app.model.Personel;
 
 import java.net.InetAddress;
@@ -57,6 +59,9 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
     private LocationManager konumYoneticisi;
     private String konumSaglayici = "gps";
     private int izinKontrol;
+    //Local veri tabanı islemleri ile ilgili tanımlamalar
+    LocalDatabase vt;
+    Button bEkle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +89,8 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
         mac.setText(mac_adresi);
         ipaddress.setText(ip_adresi);
         ///////////////////////////////////////////
+        bEkle=findViewById(R.id.button);
+
         mAuth=FirebaseAuth.getInstance();
         mUser=mAuth.getCurrentUser();
 
@@ -91,6 +98,38 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
          myRef = database.getReference("personels");
 
     }
+
+    public void btnEkle(View v){
+        String adsoyad=AdSoyad.getText().toString();
+        String tc=TCKimlik.getText().toString();
+        String sicilno=SicilNo.getText().toString();
+        String birim=Birim.getText().toString();
+        String adres=Adres.getText().toString();
+        String telefon=Telefon.getText().toString();
+        String lokasyon=Lokasyon.getText().toString();
+        String marka=markamodel.getText().toString();
+        String macadresi=mac.getText().toString();
+        String ipadresi=ipaddress.getText().toString();
+        String kullaniciadi=KullaniciAdi.getText().toString();
+        String sifre=Sifre.getText().toString();
+
+
+        Personel yeniPersonel=new Personel(0,adsoyad,tc,sicilno,birim,adres,telefon,lokasyon,marka,macadresi,ipadresi,kullaniciadi,sifre);
+        if (!adsoyad.equals("") && !tc.equals("")&& !sicilno.equals("")&& !birim.equals("")&& !adres.equals("")&& !telefon.equals("")&& !kullaniciadi.equals("")&& !sifre.equals("")){
+            vt =new LocalDatabase(this);
+            long sonuc = vt.personelEkle(yeniPersonel);
+            vt.close();
+            if(sonuc>0){
+                Toast.makeText(this, "Kayıt ekleme işlemi tamamlandı.", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "kayıt ekleme başarısız.", Toast.LENGTH_SHORT).show();
+            }
+        }else{
+            Toast.makeText(this, "Eksik bilgi girdiniz!", Toast.LENGTH_SHORT).show();
+        }
+        finish();
+    }
+
     @Override
     public void onLocationChanged(Location location) {
 
