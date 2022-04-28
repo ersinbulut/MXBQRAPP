@@ -11,9 +11,15 @@ Project for Generate Barcode and Scan Barcode
 28.04.2022
 
 işlevler:
+------------------------------------------------------------------------
 -->local ve sunucu taraflı veri tabanı crude işlemleri yapılıyor.
+------------------------------------------------------------------------
 -->kayıt esnasında girilen bilgiler ayarlar kısmında ozel adapter ile listeleniyor
+------------------------------------------------------------------------
 -->-------------------güncelleme işlemine bakılacak
+------------------------------------------------------------------------
 -->karekod oluşturucu kayıtlı bilgileri içeren bir karekod oluşturuyor
--->karekod tarayıcı ise okutulan karekodların içerisindeki bilgileri görmemizi sağlıyor..
+------------------------------------------------------------------------
+-->karekod tarayıcı ise okutulan karekodların içerisindeki bilgileri görmemizi sağlıyor
+------------------------------------------------------------------------
 
