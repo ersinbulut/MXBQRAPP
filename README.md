@@ -11,6 +11,8 @@ Project for Generate Barcode and Scan Barcode
 
 28.04.2022
 ------------------------------------------------------------------------
+![jhjk](https://user-images.githubusercontent.com/60787870/165756826-3c17d1c1-aca7-4d26-8e63-960670d060d9.png)
+
 işlevler:
 ------------------------------------------------------------------------
 -->local ve sunucu taraflı veri tabanı crude işlemleri yapılıyor.
