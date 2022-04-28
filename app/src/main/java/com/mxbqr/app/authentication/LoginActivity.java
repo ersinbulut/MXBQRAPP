@@ -15,12 +15,22 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.mxbqr.app.R;
+import com.mxbqr.app.adapter.OzelAdapter;
 import com.mxbqr.app.bottomnavigation.MainActivity;
+import com.mxbqr.app.database.LocalDatabase;
+import com.mxbqr.app.model.Personel;
+
+import java.util.ArrayList;
 
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     EditText edittext_kullanici, edittext_sifre;
+    //Local veri tabanı islemleri ile ilgili tanımlamalar
+    LocalDatabase vt;
+    ArrayList<Personel> personeller;
+    OzelAdapter ozelAdapter;
+    private String kullaniciadi,sifre;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +46,32 @@ public class LoginActivity extends AppCompatActivity {
         if (mUser!=null){
             //MainMenuActivitye geç
         }
+
+        //////////////////
+        vt =new LocalDatabase(this);
+
+        personeller = vt.personelListeleID("123");
+        vt.close();
+
+        ozelAdapter = new OzelAdapter(this,personeller);
+        //özel adapter daki local veri tabanını içeren arraylist in içerisinden kullanıcı adı ve şifre bilgisini çekme
+        for (int i = 0; i < personeller.size();i++) {
+            kullaniciadi=personeller.get(i).getKullanici_adi();
+            sifre=personeller.get(i).getKullanici_sifre();
+            System.out.println("kadi:"+personeller.get(i).getKullanici_adi());
+            System.out.println("sifre:"+personeller.get(i).getKullanici_sifre());
+        }
+
+    }
+    public void btnGirisYap(View v){
+        if (kullaniciadi.equals("kamilbulut") && sifre.equals("123456")){
+            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(i);
+            Toast.makeText(LoginActivity.this, "Giriş Başarılı", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(LoginActivity.this, "Başarısız", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     public void btnKayıtOl(View v){
@@ -60,6 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
     }
+
     public void btnGiris(View v){
         String email = edittext_kullanici.getText().toString();
         String sifre = edittext_sifre.getText().toString();

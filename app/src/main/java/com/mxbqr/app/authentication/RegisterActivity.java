@@ -32,9 +32,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.mxbqr.app.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.mxbqr.app.R;
+import com.mxbqr.app.adapter.OzelAdapter;
 import com.mxbqr.app.database.LocalDatabase;
 import com.mxbqr.app.model.Personel;
 
@@ -62,6 +63,7 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
     //Local veri tabanı islemleri ile ilgili tanımlamalar
     LocalDatabase vt;
     Button bEkle;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +98,8 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
 
          database = FirebaseDatabase.getInstance();
          myRef = database.getReference("personels");
+
+
 
     }
 

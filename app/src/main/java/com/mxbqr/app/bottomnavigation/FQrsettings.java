@@ -89,7 +89,8 @@ public class FQrsettings extends Fragment implements LocationListener {
         listView=view.findViewById(R.id.listView);
 
         vt =new LocalDatabase(this.getContext());
-        personeller = vt.personelListele();
+
+        personeller = vt.personelListeleID("123");
         vt.close();
 
         ozelAdapter = new OzelAdapter(this.getContext(),personeller);
@@ -98,10 +99,18 @@ public class FQrsettings extends Fragment implements LocationListener {
 
         //array list içerisindeki elemanları log ekranına yazdırma
         for (int i = 0; i < personeller.size();i++) {
-
-            System.out.println(personeller.get(i).getId1());
-            System.out.println(personeller.get(i).getId());
-            System.out.println(personeller.get(i).getAdsoyad());
+            System.out.println("id: "+personeller.get(i).getId1());
+            System.out.println("ad soyad: "+personeller.get(i).getAdsoyad());
+            System.out.println("tc: "+personeller.get(i).getTc());
+            System.out.println("sicil no: "+personeller.get(i).getSicilno());
+            System.out.println("birim: "+personeller.get(i).getBirim());
+            System.out.println("adres: "+personeller.get(i).getAdres());
+            System.out.println("telefon: "+personeller.get(i).getTelefon());
+            System.out.println("cihaz marka model: "+personeller.get(i).getMarkamodel());
+            System.out.println("cihaz mac adresi: "+personeller.get(i).getMacadresi());
+            System.out.println("cihaz ip adresi: "+personeller.get(i).getIpadresi());
+            System.out.println("kullanıcı adı: "+personeller.get(i).getKullanici_adi());
+            System.out.println("sifre: "+personeller.get(i).getKullanici_sifre());
         }
 
         btnKaydet=view.findViewById(R.id.button4);
@@ -149,23 +158,23 @@ public class FQrsettings extends Fragment implements LocationListener {
                 Map<String,String> params=new HashMap<>();
                 //Kullanıcı bilgileri
                 for (int i = 0; i < personeller.size();i++) {
-                    params.put("personel_id", "27");
-                    params.put("personel_adsoyad", personeller.get(i).getAdsoyad());
-                    params.put("personel_tc", personeller.get(i).getTc());
-                    params.put("personel_sicilno", personeller.get(i).getSicilno());
-                    params.put("personel_birim", personeller.get(i).getBirim());
-                    params.put("personel_adres", personeller.get(i).getAdres());
-                    params.put("personel_telefon", personeller.get(i).getTelefon());
+                    params.put("personel_id","29");
+                    params.put("personel_adsoyad",personeller.get(i).getAdsoyad());
+                    params.put("personel_tc",personeller.get(i).getTc());
+                    params.put("personel_sicilno",personeller.get(i).getSicilno());
+                    params.put("personel_birim",personeller.get(i).getBirim());
+                    params.put("personel_adres",personeller.get(i).getAdres());
+                    params.put("personel_telefon",personeller.get(i).getTelefon());
 
-                    params.put("personel_lokasyon", personeller.get(i).getLokasyon());
+                    params.put("personel_lokasyon",personeller.get(i).getLokasyon());
 
-                    params.put("personel_cmarkamodel", personeller.get(i).getMarkamodel());
-                    params.put("personel_cmacadresi", personeller.get(i).getMacadresi());
-                    params.put("personel_cipadresi", personeller.get(i).getIpadresi());
+                    params.put("personel_cmarkamodel",personeller.get(i).getMarkamodel());
+                    params.put("personel_cmacadresi",personeller.get(i).getMacadresi());
+                    params.put("personel_cipadresi",personeller.get(i).getIpadresi());
 
                     //Login Bilgileri
-                    params.put("personel_kullaniciadi", personeller.get(i).getKullanici_adi());
-                    params.put("personel_sifre", personeller.get(i).getKullanici_sifre());
+                    params.put("personel_kullaniciadi",personeller.get(i).getKullanici_adi());
+                    params.put("personel_sifre",personeller.get(i).getKullanici_sifre());
                 }
                 return params;
             }
@@ -223,6 +232,24 @@ public class FQrsettings extends Fragment implements LocationListener {
 
         Volley.newRequestQueue(getContext()).add(istek);
         //Toast.makeText(getContext(), "Bilgiler güncellendi..", Toast.LENGTH_SHORT).show();
+    }
+*/
+/*
+    //ekleme işleminden sonra listview ı güncelleyen method
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        vt =new LocalDatabase(getContext());
+        personeller = vt.personelListele();
+        vt.close();
+
+        ozelAdapter = new OzelAdapter(getContext(),personeller);
+        listView.setAdapter(ozelAdapter);
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 */
     @Override

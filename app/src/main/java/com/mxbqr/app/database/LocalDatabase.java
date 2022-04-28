@@ -101,6 +101,42 @@ public class LocalDatabase extends SQLiteOpenHelper {
         return personelArrayList;
     }
 
+    public ArrayList<Personel> personelListeleID(String tc1){
+        ArrayList<Personel> personelArrayList=new ArrayList<>();
+        //veri tabanından okuma işlemleri
+        SQLiteDatabase db= getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM Personels WHERE personel_tc="+tc1,null);
+        //rawquery bilgileri cursor tipinde döndürür
+        //cursor nesnesi: kayıtları üzerinde gezinebileceğimiz şekile getirir örneğin 10 kayıt dönüyorsa sırayla cursor u haraket
+        //ettirip bu kaydın içeriğine erişebiliriz
+
+        //ilk kayıt var ise true döner
+        if (cursor.moveToFirst()){
+            do {
+                int i=cursor.getInt(0);
+                String adsoyad = cursor.getString(1);
+                String tc = cursor.getString(2);
+                String sicilno = cursor.getString(3);
+                String birim = cursor.getString(4);
+                String adres = cursor.getString(5);
+                String telefon = cursor.getString(6);
+                String lokasyon = cursor.getString(7);
+
+                String markamodel = cursor.getString(8);
+                String macadresi = cursor.getString(9);
+                String ipadresi = cursor.getString(10);
+
+                String kullanici_adi = cursor.getString(11);
+                String kullanici_sifre = cursor.getString(12);
+                //bu değerleri diziye atma
+                Personel p=new Personel(i,adsoyad,tc,sicilno,birim,adres,telefon,lokasyon,markamodel,macadresi,ipadresi,kullanici_adi,kullanici_sifre);
+                personelArrayList.add(p);
+            }while (cursor.moveToNext());//her kaydı okuduktan sonra bir sonrakine geçer
+        }
+        cursor.close();
+        return personelArrayList;
+    }
+
     public Long personelDuzelt(Personel p){
         ContentValues icerik=new ContentValues();
         icerik.put("personel_adsoyad",p.getAdsoyad());

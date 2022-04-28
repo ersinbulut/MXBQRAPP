@@ -111,7 +111,7 @@
 
         android:drawableLeft="@drawable/true_check"
         android:fontFamily="@font/anton"
-        android:onClick="btnGiris"
+        android:onClick="btnGirisYap"
         android:text="Giriş Yap"
         android:textColor="#FFFF" />
 
