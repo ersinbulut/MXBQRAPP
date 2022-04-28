@@ -19,7 +19,8 @@ işlevler:
 ------------------------------------------------------------------------
 -->kayıt esnasında girilen bilgiler ayarlar kısmında ozel adapter ile listeleniyor
 ------------------------------------------------------------------------
--->-------------------güncelleme işlemine bakılacak
+-->-------------------güncelleme işlemlerine bakılacak
+-->-------------------kullanıcı işlemlerine bakılacak
 ------------------------------------------------------------------------
 -->karekod oluşturucu kayıtlı bilgileri içeren bir karekod oluşturuyor
 ------------------------------------------------------------------------
