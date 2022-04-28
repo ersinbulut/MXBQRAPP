@@ -69,7 +69,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
         ArrayList<Personel> personelArrayList=new ArrayList<>();
         //veri tabanından okuma işlemleri
         SQLiteDatabase db= getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT id, turkce, ingilizce FROM kelime",null);
+        Cursor cursor = db.rawQuery("SELECT * FROM Personels",null);
         //rawquery bilgileri cursor tipinde döndürür
         //cursor nesnesi: kayıtları üzerinde gezinebileceğimiz şekile getirir örneğin 10 kayıt dönüyorsa sırayla cursor u haraket
         //ettirip bu kaydın içeriğine erişebiliriz
@@ -85,6 +85,7 @@ public class LocalDatabase extends SQLiteOpenHelper {
                 String adres = cursor.getString(5);
                 String telefon = cursor.getString(6);
                 String lokasyon = cursor.getString(7);
+
                 String markamodel = cursor.getString(8);
                 String macadresi = cursor.getString(9);
                 String ipadresi = cursor.getString(10);
@@ -117,14 +118,14 @@ public class LocalDatabase extends SQLiteOpenHelper {
 
         SQLiteDatabase db=  getWritableDatabase();
         //GÜNCELLENEN KAYDIN ID SİNİ CEVAP OLARAK VERİR
-        long cevap = db.update("kelime",icerik,"id="+p.getId1(),null);
+        long cevap = db.update("Personels",icerik,"personel_id="+p.getId1(),null);
         //HATA OLURSA -1 SONUCU VERİR
         return cevap;
     }
 
     public long personelSil(int silinecek_id){
         SQLiteDatabase db=  getWritableDatabase();
-        long cevap = db.delete("Personels","id="+silinecek_id,null);
+        long cevap = db.delete("Personels","personel_id="+silinecek_id,null);
         return cevap;
     }
     /*

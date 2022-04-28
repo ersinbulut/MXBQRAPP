@@ -2,13 +2,11 @@ package com.mxbqr.app.bottomnavigation;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,13 +32,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.mxbqr.app.R;
+import com.mxbqr.app.adapter.OzelAdapter;
 import com.mxbqr.app.authentication.LoginActivity;
+import com.mxbqr.app.database.LocalDatabase;
 import com.mxbqr.app.model.Personel;
 
 import java.net.InetAddress;
@@ -64,7 +62,11 @@ public class FQrsettings extends Fragment implements LocationListener {
     private FirebaseUser mUser;
     FirebaseDatabase database;
     DatabaseReference myRef;
-
+    //Local veritabanı ile ilgili tanımlamalar
+    ListView listView;
+    ArrayList<Personel> personeller;
+    OzelAdapter ozelAdapter;
+    LocalDatabase vt;
 
 
     //lokasyon islemleri ile ilgili tanımlamalar
@@ -84,109 +86,39 @@ public class FQrsettings extends Fragment implements LocationListener {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_f_qrsettings, container, false);
 
-        AdSoyad=view.findViewById(R.id.edAdSoyad);
-        TCKimlik=view.findViewById(R.id.edTCKimlikNo);
-        SicilNo=view.findViewById(R.id.edSicilNo);
-        Birim=view.findViewById(R.id.edBirim);
-        Adres=view.findViewById(R.id.edAdres);
-        Telefon=view.findViewById(R.id.edTelefon);
-        Lokasyon=view.findViewById(R.id.edLokasyon);
-        KullaniciAdi=view.findViewById(R.id.edKullaniciAdi);
-        Sifre=view.findViewById(R.id.edSifre);
-        SifreTekrar=view.findViewById(R.id.edSifreTekrar);
-        txtkey=view.findViewById(R.id.txtKey);
+        listView=view.findViewById(R.id.listView);
 
-        konumYoneticisi = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        vt =new LocalDatabase(this.getContext());
+        personeller = vt.personelListele();
+        vt.close();
 
-        markamodel=(TextView) view.findViewById(R.id.textView1_model2);
-        macadresi=(TextView) view.findViewById(R.id.textView2_mac2);
-        ipadresi=(TextView) view.findViewById(R.id.textView3_manufacture2);
+        ozelAdapter = new OzelAdapter(this.getContext(),personeller);
+        listView.setAdapter(ozelAdapter);
 
 
-        markamodel.setText(Build.MANUFACTURER+ " " + Build.MODEL);
-        macadresi.setText(getMacAddr());
-        ipadresi.setText(getIpAddress(true));
+        //array list içerisindeki elemanları log ekranına yazdırma
+        for (int i = 0; i < personeller.size();i++) {
 
+            System.out.println(personeller.get(i).getId1());
+            System.out.println(personeller.get(i).getId());
+            System.out.println(personeller.get(i).getAdsoyad());
+        }
 
-        mAuth = FirebaseAuth.getInstance();
-        mUser = mAuth.getCurrentUser();
-
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("personels");
-
-
-        // Veri tabanındaki verileri okuma
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot d:dataSnapshot.getChildren()){
-                    Personel personel = d.getValue(Personel.class);
-                    key=d.getKey();
-                    personel.setId(key);
-
-                    txtkey.setText(key);
-                    AdSoyad.setText(personel.getAdsoyad());
-                    TCKimlik.setText(personel.getTc());
-                    SicilNo.setText(personel.getSicilno());
-                    Birim.setText(personel.getBirim());
-                    Adres.setText(personel.getAdres());
-                    Telefon.setText(personel.getTelefon());
-                    Lokasyon.setText(personel.getLokasyon());
-
-                    markamodel.setText(markamodel.getText());
-                    macadresi.setText(macadresi.getText());
-                    ipadresi.setText(ipadresi.getText());
-
-                    KullaniciAdi.setText(personel.getKullanici_adi());
-                    Sifre.setText(personel.getKullanici_sifre());
-                    SifreTekrar.setText(personel.getKullanici_sifre());
-                }
-
-                //Log.d(TAG, "Value is: " + value);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                // Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
-        // Veri tabanındaki verileri güncelleme
-        btnKaydet=view.findViewById(R.id.button);
+        btnKaydet=view.findViewById(R.id.button4);
         btnKaydet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //kayıt güncelleme
-                konumAl();
-                //kisiGuncelle();
-                userUpdate();
-                Map<String,Object> bilgiler=new HashMap<>();
-                String id = key;
-                bilgiler.put("id",id);
-                bilgiler.put("adsoyad",AdSoyad.getText().toString());
-                bilgiler.put("tc",TCKimlik.getText().toString());
-                bilgiler.put("sicilno",SicilNo.getText().toString());
-                bilgiler.put("birim",Birim.getText().toString());
-                bilgiler.put("adres",Adres.getText().toString());
-                bilgiler.put("telefon",Telefon.getText().toString());
-                bilgiler.put("lokasyon",Lokasyon.getText().toString());
-
-                bilgiler.put("markamodel",markamodel.getText().toString());
-                bilgiler.put("macadresi",macadresi.getText().toString());
-                bilgiler.put("ipadresi",ipadresi.getText().toString());
-
-                bilgiler.put("kullanici_adi",KullaniciAdi.getText().toString());
-                bilgiler.put("kullanici_sifre",Sifre.getText().toString());
-                //bu kod firebase veritabanındaki id değeridir.
-                myRef.child(id).updateChildren(bilgiler);
-                Toast.makeText(getContext(), "Bilgiler güncellendi..", Toast.LENGTH_SHORT).show();
+               //Verileri güncelleme işlemleri
+                kisiGuncelle();//sunucu veri tabanını güncelleyen metod
+                Toast.makeText(getContext(), "Bilgiler Güncellendi..", Toast.LENGTH_SHORT).show();
             }
         });
-        btnCikisYap=view.findViewById(R.id.button2);
+
+        btnCikisYap=view.findViewById(R.id.button5);
         btnCikisYap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAuth.signOut();
+               // mAuth.signOut();
                 Intent i = new Intent(getContext(), LoginActivity.class);
                 startActivity(i);
                 getActivity().finish();
@@ -194,11 +126,10 @@ public class FQrsettings extends Fragment implements LocationListener {
             }
         });
 
-
         return view;
     }
-
-    public void userUpdate(){
+    //Sunucu veritabanını güncelleyen method
+    public void kisiGuncelle(){
         String url="http://mxbinteractive.com/MXBQRAPP/update_personel.php";
 
         StringRequest istek=new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -217,23 +148,25 @@ public class FQrsettings extends Fragment implements LocationListener {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> params=new HashMap<>();
                 //Kullanıcı bilgileri
-                params.put("personel_id","");
-                params.put("personel_adsoyad", AdSoyad.getText().toString());
-                params.put("personel_tc", String.valueOf(TCKimlik.getText()));
-                params.put("personel_sicilno", String.valueOf(SicilNo.getText()));
-                params.put("personel_birim", String.valueOf(Birim.getText()));
-                params.put("personel_adres", String.valueOf(Adres.getText()));
-                params.put("personel_telefon", String.valueOf(Telefon.getText()));
-                params.put("personel_lokasyon", String.valueOf(Lokasyon.getText()));
+                for (int i = 0; i < personeller.size();i++) {
+                    params.put("personel_id", "27");
+                    params.put("personel_adsoyad", personeller.get(i).getAdsoyad());
+                    params.put("personel_tc", personeller.get(i).getTc());
+                    params.put("personel_sicilno", personeller.get(i).getSicilno());
+                    params.put("personel_birim", personeller.get(i).getBirim());
+                    params.put("personel_adres", personeller.get(i).getAdres());
+                    params.put("personel_telefon", personeller.get(i).getTelefon());
 
-                params.put("personel_cmarkamodel",markamodel.getText().toString());
-                params.put("personel_cmacadresi",macadresi.getText().toString());
-                params.put("personel_cipadresi",ipadresi.getText().toString());
+                    params.put("personel_lokasyon", personeller.get(i).getLokasyon());
 
-                //Login Bilgileri
-                params.put("personel_kullaniciadi", String.valueOf(KullaniciAdi.getText()));
-                params.put("personel_sifre", String.valueOf(Sifre.getText()));
+                    params.put("personel_cmarkamodel", personeller.get(i).getMarkamodel());
+                    params.put("personel_cmacadresi", personeller.get(i).getMacadresi());
+                    params.put("personel_cipadresi", personeller.get(i).getIpadresi());
 
+                    //Login Bilgileri
+                    params.put("personel_kullaniciadi", personeller.get(i).getKullanici_adi());
+                    params.put("personel_sifre", personeller.get(i).getKullanici_sifre());
+                }
                 return params;
             }
         };

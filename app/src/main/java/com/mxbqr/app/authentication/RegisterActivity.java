@@ -100,6 +100,7 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
     }
 
     public void btnEkle(View v){
+        konumAl();
         String adsoyad=AdSoyad.getText().toString();
         String tc=TCKimlik.getText().toString();
         String sicilno=SicilNo.getText().toString();
@@ -120,6 +121,7 @@ public class RegisterActivity extends AppCompatActivity implements LocationListe
             long sonuc = vt.personelEkle(yeniPersonel);
             vt.close();
             if(sonuc>0){
+                kisiEkle();  //sunucu veri tabanına ekleme metodu
                 Toast.makeText(this, "Kayıt ekleme işlemi tamamlandı.", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(this, "kayıt ekleme başarısız.", Toast.LENGTH_SHORT).show();
